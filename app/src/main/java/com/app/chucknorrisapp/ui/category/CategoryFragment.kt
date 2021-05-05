@@ -19,8 +19,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
-class CategoryFragment(private val navigation: BottomNavigationView) : BaseFragment(),
-    CoroutineScope {
+class CategoryFragment(private val navigation: BottomNavigationView) : BaseFragment(){
 
     private val viewModel: CategoryViewModel by viewModels()
 
@@ -34,15 +33,12 @@ class CategoryFragment(private val navigation: BottomNavigationView) : BaseFragm
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         loadManager(true)
-        launch {
-            viewModel.loadCategory()
-        }
+        viewModel.loadCategory()
 
-        viewModel.dataCategory.observe(this.viewLifecycleOwner, {
+        viewModel.loadCategoryData.observe(this.viewLifecycleOwner, {
             when(it.code()){
                 200 -> loadSpinner(it.body()!!)
                 else -> onError()
-
             }
         })
     }
@@ -64,18 +60,15 @@ class CategoryFragment(private val navigation: BottomNavigationView) : BaseFragm
                 position: Int,
                 id: Long
             ) {
-
                 val itemSelect = data[position]
-                launch {
-                    viewModel.loadRandomByCategory(itemSelect)
-                }
+                viewModel.loadRandomByCategory(itemSelect)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
 
         }
 
-        viewModel.randomByCategory.observe(this.viewLifecycleOwner, { data ->
+        viewModel.loadRandomByCategoryData.observe(this.viewLifecycleOwner, { data ->
 
             Picasso.get()
                 .load(data.body()!!.icon_url)
@@ -104,7 +97,4 @@ class CategoryFragment(private val navigation: BottomNavigationView) : BaseFragm
             navigation.visibility = View.VISIBLE
         }
     }
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main
 }

@@ -2,8 +2,10 @@ package com.app.chucknorrisapp.repository.category
 
 import androidx.annotation.UiThread
 import com.app.chucknorrisapp.entity.RandomEntity
+import com.app.chucknorrisapp.networking.ApiService
 import com.app.chucknorrisapp.networking.RetrofitBuilder
 import retrofit2.Response
+import javax.inject.Inject
 
 class CategoryRepository {
 

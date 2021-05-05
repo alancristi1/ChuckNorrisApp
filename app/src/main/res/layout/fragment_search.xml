@@ -45,7 +45,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_scrollFlags="scroll|enterAlways"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:queryHint="Exemplo Filmes de ação"
+        app:queryHint="Exemple: Music or Food"
         app:searchIcon="@drawable/ic_search"
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" >
 

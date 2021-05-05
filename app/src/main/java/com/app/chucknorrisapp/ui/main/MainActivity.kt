@@ -15,7 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
-class MainActivity : AppCompatActivity(), CoroutineScope {
+class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,7 +49,4 @@ class MainActivity : AppCompatActivity(), CoroutineScope {
         fragmentTransaction.replace(R.id.root_layout, fragment)
         fragmentTransaction.commit()
     }
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main
 }

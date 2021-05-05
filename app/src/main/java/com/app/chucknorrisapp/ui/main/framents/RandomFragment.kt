@@ -12,6 +12,7 @@ import com.app.chucknorrisapp.ui.main.RandomViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_random.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -19,8 +20,8 @@ import kotlinx.coroutines.launch
 import java.lang.Exception
 import kotlin.coroutines.CoroutineContext
 
-class RandomFragment(private val navigation: BottomNavigationView) : BaseFragment(),
-    CoroutineScope {
+@AndroidEntryPoint
+class RandomFragment(private val navigation: BottomNavigationView) : BaseFragment(){
 
     private val viewModel: RandomViewModel by viewModels()
 
@@ -36,9 +37,7 @@ class RandomFragment(private val navigation: BottomNavigationView) : BaseFragmen
 
         loadManager(true)
 
-        launch {
-            viewModel.loadRandom()
-        }
+        viewModel.loadRandom()
 
         viewModel.dataRandom.observe(this.viewLifecycleOwner, { response ->
             when(response.code()){
@@ -49,10 +48,8 @@ class RandomFragment(private val navigation: BottomNavigationView) : BaseFragmen
         })
 
         btntry.setOnClickListener {
-            launch {
-                loadManager(true)
-                viewModel.loadRandom()
-            }
+            loadManager(true)
+            viewModel.loadRandom()
         }
     }
 
@@ -87,7 +84,4 @@ class RandomFragment(private val navigation: BottomNavigationView) : BaseFragmen
     private fun onError(){
 
     }
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main
 }

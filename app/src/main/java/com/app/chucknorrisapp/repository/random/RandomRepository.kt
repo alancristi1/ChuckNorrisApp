@@ -2,10 +2,12 @@ package com.app.chucknorrisapp.repository.random
 
 import androidx.annotation.UiThread
 import com.app.chucknorrisapp.entity.RandomEntity
+import com.app.chucknorrisapp.networking.ApiService
 import com.app.chucknorrisapp.networking.RetrofitBuilder
 import retrofit2.Response
+import javax.inject.Inject
 
-class RandomRepository {
+class RandomRepository{
 
     @UiThread
     suspend fun loadRandom(): Response<RandomEntity> {

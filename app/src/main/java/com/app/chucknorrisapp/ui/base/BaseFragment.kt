@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.app.chucknorrisapp.R
+import dagger.hilt.android.AndroidEntryPoint
 
 open class BaseFragment : Fragment() {
 

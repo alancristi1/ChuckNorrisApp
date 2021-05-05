@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.chucknorrisapp.R
@@ -23,11 +23,9 @@ import kotlinx.coroutines.launch
 import retrofit2.Response
 import kotlin.coroutines.CoroutineContext
 
-
-class SearchFragment(private val navigation : BottomNavigationView) : BaseFragment(), CoroutineScope {
+class SearchFragment(private val navigation : BottomNavigationView) : BaseFragment() {
 
     private val viewModel: SearchViewModel by viewModels()
-    private lateinit var listFind : Response<FinderRandomEntity>
     private lateinit var searchAdapter : SearchAdapter
 
     override fun onCreateView(
@@ -37,31 +35,34 @@ class SearchFragment(private val navigation : BottomNavigationView) : BaseFragme
         return inflater.inflate(R.layout.fragment_search, container, false)
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         search_view.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 loadManager(true)
                 if(query!!.length >= 3){
-                    launch {
-                        listFind = viewModel.finder(query)
-                        searchAdapter = SearchAdapter(listFind.body()!!.result)
+                    viewModel.finder(query)
 
-                        if(listSearch.itemDecorationCount == 0){
-                            listSearch.addItemDecoration(DividerItemDecoration(requireContext(),
-                                    DividerItemDecoration.VERTICAL))
-                        }
+                    viewModel.dataFinder.observe(viewLifecycleOwner, { data ->
+                        listSearch.adapter = SearchAdapter(data.body()!!.result)
 
-                        val size = listFind.body()!!.total.toString()
-                        txt_findsize.text = "Resultados encontrados: $size"
                         listSearch.setHasFixedSize(true)
+
                         listSearch.layoutManager = LinearLayoutManager(
-                                activity, LinearLayoutManager.VERTICAL, false
+                            activity, LinearLayoutManager.VERTICAL, false
                         )
-                        listSearch.adapter = searchAdapter
-                        loadManager(false)
+
+                        val size = data.body()!!.total
+                        txt_findsize.text = "Resultados encontrados: $size"
+                    })
+
+                    if(listSearch.itemDecorationCount == 0){
+                        listSearch.addItemDecoration(DividerItemDecoration(requireContext(),
+                                DividerItemDecoration.VERTICAL))
                     }
+
+                    loadManager(false)
 
                 }else{
                     loadManager(false)
@@ -75,17 +76,11 @@ class SearchFragment(private val navigation : BottomNavigationView) : BaseFragme
                 return false
             }
         })
-//        loadManager(false)
     }
 
     override fun onResume() {
         super.onResume()
         loadManager(false)
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Log.i("Log onCreate", "onCreate")
     }
 
     private fun loadManager(start: Boolean){
@@ -99,7 +94,4 @@ class SearchFragment(private val navigation : BottomNavigationView) : BaseFragme
             search_view.visibility = View.VISIBLE
         }
     }
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main
 }
